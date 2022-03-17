@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/tswetkov/todos"
 	"github.com/tswetkov/todos/pkg/handler"
@@ -21,12 +21,14 @@ func initConfig() error {
 }
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	if err := initConfig(); err != nil {
-		log.Fatalf("Initializing app error! %s", err.Error())
+		logrus.Fatalf("Initializing app error! %s", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Loading env errors! %s", err.Error())
+		logrus.Fatalf("Loading env errors! %s", err.Error())
 	}
 
 	db, err := repository.NewPostgresDB(repository.Config{
@@ -39,7 +41,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Fatalf("Initializing database error!")
+		logrus.Fatalf("Initializing database error!")
 	}
 
 	repos := repository.NewRepository(db)
@@ -48,6 +50,6 @@ func main() {
 	server := new(todos.Server)
 
 	if err := server.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("Main error: %s", err.Error())
+		logrus.Fatalf("Main error: %s", err.Error())
 	}
 }
