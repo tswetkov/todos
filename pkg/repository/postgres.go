@@ -37,7 +37,6 @@ func NewPostgresDB(с Config) (*sqlx.DB, error) {
 
 	err = db.Ping()
 	if err != nil {
-		println(err.Error())
 		return nil, err
 	}
 
