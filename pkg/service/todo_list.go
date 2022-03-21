@@ -24,3 +24,7 @@ func (s *TodoListService) GetAll(userId int) ([]todos.TodoList, error) {
 func (s *TodoListService) GetById(userId, listId int) (todos.TodoList, error) {
 	return s.repo.GetById(userId, listId)
 }
+
+func (s *TodoListService) Delete(userId int, listId int) error {
+	return s.repo.Delete(userId, listId)
+}
